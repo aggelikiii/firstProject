@@ -1,63 +1,57 @@
 package tests;
 
 import base.BaseTest;
-import main.MainMethods;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
 import pages.GooglePage;
 import utilities.ExtentManager;
 
 public class GoogleTest extends BaseTest {
 
-    GooglePage googlePage;
-    private ExtentReports extent;
-    private ExtentTest test;
-
-    @BeforeClass
+    @BeforeSuite
     public void setUpReport() {
-        extent = ExtentManager.createInstance("reports/AutomationReport.html");
-        googlePage = new GooglePage(driver);
+        ExtentManager.createInstance("reports/AutomationReport.html");
     }
 
     @Test
     public void openGoogleTest() {
-        test = ExtentManager.createTest("Open Google Test");
 
-        driver.get("https://www.google.com");
+        ExtentManager.createTest("Open Google Test");
+
+        GooglePage googlePage = new GooglePage(driver);
+
+        googlePage.openPage();
+
         String title = driver.getTitle();
 
         if (title.contains("Google")) {
-            test.pass("Title is correct: " + title);
+            ExtentManager.getTest().pass("Title is correct: " + title);
         } else {
-            test.fail("Title is incorrect: " + title);
+            ExtentManager.getTest().fail("Title is incorrect: " + title);
         }
     }
 
     @Test
     public void googleSearchTest() {
-        test = ExtentManager.createTest("Google Search Test");
 
-        driver.get("https://www.google.com");
+        ExtentManager.createTest("Google Search Test");
 
-        googlePage = new GooglePage(driver);
+        GooglePage googlePage = new GooglePage(driver);
 
-        googlePage.enterSearchText("Selenium WebDriver");
-        googlePage.clickSearch();
+        googlePage
+                .openPage()
+                .enterSearchText("Google")
+                .clickSearch();
 
-        String currentUrl = driver.getCurrentUrl();
-
-        if (currentUrl.contains("search")) {
-            test.pass("Search results page opened successfully");
+        if (googlePage.isResultsPageDisplayed()) {
+            ExtentManager.getTest().pass("Search results are displayed");
         } else {
-            test.fail("Search did not work properly");
+            ExtentManager.getTest().fail("Search results are NOT displayed");
         }
     }
 
-
-    @AfterClass
+    @AfterSuite
     public void tearDownReport() {
         ExtentManager.flushReports();
     }
