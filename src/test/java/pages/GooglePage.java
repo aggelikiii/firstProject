@@ -1,34 +1,37 @@
 package pages;
 
-import main.MainMethods;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
-import static java.awt.SystemColor.text;
+public class GooglePage {
 
-public class GooglePage extends MainMethods {
-    //xpaths
+    private WebDriver driver;
 
-    private final By searchTextBox= By.xpath("");
     private By searchBox = By.name("q");
+    private By resultsStats = By.id("result-stats");
+
     public GooglePage(WebDriver driver) {
-        super();
+        this.driver = driver;
     }
 
-
-    public GooglePage enterText(String text){
-
+    public GooglePage openPage() {
+        driver.get("https://www.google.com");
         return this;
     }
 
-    public void enterSearchText(String seleniumWebDriver) {
+    public GooglePage enterSearchText(String text) {
         driver.findElement(searchBox).clear();
-        driver.findElement(searchBox).sendKeys(seleniumWebDriver);
+        driver.findElement(searchBox).sendKeys(text);
+        return this;
     }
 
-    public void clickSearch() {
-        driver.findElement(searchBox).submit();
+    public GooglePage clickSearch() {
+        driver.findElement(searchBox).sendKeys(Keys.ENTER);
+        return this;
+    }
 
+    public boolean isResultsPageDisplayed() {
+        return driver.findElements(resultsStats).size() > 0;
     }
 }
